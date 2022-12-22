@@ -20,7 +20,7 @@ website:
         href: https://github.com/pbarbarant
 format:
   html:
-    theme: lux
+    theme: quartz
     css: styles.css
     toc: true
 
