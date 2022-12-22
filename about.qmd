@@ -1,0 +1,35 @@
+---
+title: "Pierre-Louis Barbarant"
+about:
+  template: solana
+  image: assets/profile.jpg
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com/pbarbarant
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/plbarbarant/
+    - icon: instagram
+      text: Instagram
+      href: https://www.instagram.com/pilou.ba/
+---
+
+Graduate student in statistics and computer vision mainly interested in 
+optimal transport, topological data analysis, 3D geometry and their implications
+in machine learning.
+
+## 📚 Education
+
+- MRes in Computer Vision | *Sorbonne University* |
+  2022 - 2023 | Paris FR
+
+- MEng in Statistics and Economics | *ENSAE Paris* |
+  2020 - 2024 | Paris FR
+
+
+## ✏️ Experience
+
+- *Paris Brain Institute* | Research collaborator | 2022 - 2023
+
+- *Pasteur Institute* | Research intern | Summer 2021
