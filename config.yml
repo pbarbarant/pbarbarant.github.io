@@ -52,9 +52,9 @@ params:
     math: true
     profileMode:
           enabled: true
-          title: Professor Dr von Igelfeld
-          subtitle: "I am a Professor in the Institute of Romance Philology at the University of Regensburg, Germany. My research focuses on Portuguese irregular verbs. I was a doctoral student of Professor Dr Dieter Vogelsang in Munich, and later a second assistant of Professor Walter Schoeffler-Henschell at the University of Wiesbaden."
-          imageUrl: "picture.jpeg"
+          title: Pierre-Louis Barbarant
+          subtitle: "I am a first-year PhD student with the MIND team at INRIA Saclay, France. My research focuses on enhancing fMRI hyperalignment techniques to improve brain decoding performance, leveraging machine learning models and optimal transport methods. Prior to this, I completed a Master's degree in applied mathematics at Université Paris-Saclay, France, a Master's degree in computer science at Sorbonne Université, France, and an engineering degree in statistics and economics at ENSAE Paris, France."
+          imageUrl: "portrait_bw.png"
           imageWidth: 160
           imageHeight: 160
           buttons:
