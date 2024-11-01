@@ -1,5 +1,5 @@
 baseURL: "https://pbarbarant.github.io"
-title: Moritz-Maria von Igelfeld
+title: Pierre-Louis Barbarant
 theme: PaperMod
 
 enableInlineShortcodes: true
@@ -10,25 +10,19 @@ taxonomies:
 
 menu:
     main:
-        - name: Books
-          url: books/
-          weight: 5 
-        - name: Papers
-          url: papers/
+        - name: Publications
+          url: publications/
           weight: 2
         - name: Courses
           url: courses/
           weight: 3
-        - name: Data
-          url: data/
+        - name: Software
+          url: software/
           weight: 4 
-        - name: Blog
-          url: https://en.wikipedia.org/wiki/Moritz-Maria_von_Igelfeld_(character)
-          weight: 6
 
 params:
-    description: "I am a Professor of Philology at the Institute of Romance Philology in Regensburg, Germany. My research focuses mostly on Portuguese irregular verbs."
-    author: Moritz-Maria von Igelfeld
+    description: "I am a first-year PhD student with the MIND team at INRIA Saclay, France. My research focuses on optimal transport and fMRI decoding."
+    author: Pierre-Louis Barbarant
     # googleAnalyticsID: "G-XXXXX"
     DateFormat: "January 2006"
     defaultTheme: light
@@ -42,7 +36,7 @@ params:
     ShowBreadCrumbs: false
     ShowCodeCopyButtons: true
     ShowAllPagesInArchive: false
-    MainSections: ["books","courses","papers","data"]
+    MainSections: ["books","courses","publications","soffware"]
     ShowToc: false
     disableScrollToTop: true
     TocOpen: true
@@ -52,48 +46,32 @@ params:
     math: true
     profileMode:
           enabled: true
-          title: Pierre-Louis Barbarant
+          title: Pierre-Louis “Pilou” Barbarant
           subtitle: "I am a first-year PhD student with the MIND team at INRIA Saclay, France. My research focuses on enhancing fMRI hyperalignment techniques to improve brain decoding performance, leveraging machine learning models and optimal transport methods. Prior to this, I completed a Master's degree in applied mathematics at Université Paris-Saclay, France, a Master's degree in computer science at Sorbonne Université, France, and an engineering degree in statistics and economics at ENSAE Paris, France."
           imageUrl: "portrait_bw.png"
           imageWidth: 160
           imageHeight: 160
           buttons:
-            - name: Papers
-              url: papers/
+            - name: Publications
+              url: publications/
             - name: Courses
               url: courses/
-            - name: Data
-              url: data/
-            - name: Books
-              url: books/
-            - name: Tags
-              url: tags/
-            - name: Archive
-              url: archive/
-            - name: Blog
-              url: https://en.wikipedia.org/wiki/Moritz-Maria_von_Igelfeld_(character)
+            - name: Software
+              url: software/
 
     socialIcons:
         - name: CV
           url: cv.pdf
         - name: Email
-          url: mailto:moritz.maria.von.igelfeld@gmail.com
-        - name: Zoom
-          url: https://www.zoom.us/my/igelfeld
+          url: mailto:pierre-louis.barbarant@inria.fr
         - name: Location
           url: location/
-        - name: Office Hours
-          url: officehours/
         - name: Google Scholar
-          url: https://scholar.google.com/citations?user=cL23w-4AAAAJ
+          url: https://scholar.google.com/
         - name: GitHub
-          url: https://github.com/pmichaillat
-        - name: Substack
-          url: https://pmichaillat.substack.com
-        - name: YouTube
-          url: https://www.youtube.com/@alexandermccallsmithoffici9000
-        - name: Twitter
-          url: https://twitter.com/McCallSmith
+          url: https://github.com/pbarbarant
+        - name: X
+          url: https://x.com/pbarbarant
 
     assets:
         disableScrollBarStyle: true
@@ -101,7 +79,7 @@ params:
         hiddenInList: false
         hiddenInSingle: true
     label:
-      text: "Moritz-Maria von Igelfeld"
+      text: "Pierre-Louis Barbarant"
       icon: favicon.ico
       iconHeight: 18
 
