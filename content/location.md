@@ -17,9 +17,5 @@ Campus de l’École Polytechnique\
 
 ---
 
-#### Office location
-
-<iframe src="https://www.google.com/maps/embed/v1/place?q=Inria+saclay&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8" 
-width="700" height="500" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
 
 
