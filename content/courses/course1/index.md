@@ -1,120 +1,460 @@
 ---
-title: "Lectures at the Villa of Reduced Circumstances"
-date: 2003-03-10
-lastmod: 2024-09-08
-aliases: 
-    - /courses/course2/slides4.pdf
-    - /courses/course2/slides1.pdf
-    - /courses/course2/slides3.pdf
-    - /courses/course2/slides2.pdf
-    - /courses/course2/notes3.pdf
-    - /courses/course2/notes4.pdf
-    - /courses/course2/ps3.pdf
-    - /courses/course2/ps4.pdf
-    - /courses/course1/quiz1.pdf
-    - /courses/course1/quiz2.pdf
-    - /courses/course2/quiz3.pdf
-    - /courses/course2/quiz4.pdf
-    - /courses/course1/ps1.pdf
-tags: ["Romance languages","philology","irregular verbs","Spanish","Portuguese"]
+title: "Git Troubleshooting Guide"
+date: 2024-11-06
+lastmod: 2024-11-06
+tags: ["Git","Github", "Programming"]
 author: "Pierre-Louis Barbarant"
 description: "This graduate course presents classical results in Romance philology." 
-summary: "This graduate course presents classical results in Romance philology. it focuses especially on Portugese and Spanish irregular verbs." 
+summary: "A short tutorial to solve your typical git problems." 
 cover:
-    image: "course1.png"
-    alt: "Villa of Reduced Circumstances"
+    image: "cover.png"
     relative: false
-editPost:
-    URL: "https://github.com/pmichaillat/hugo-website"
-    Text: "Course portal"
 showToc: true
 disableAnchoredHeadings: false
 
 ---
 
-## Introduction
+## Diagnostic Tools
 
-This course covers research topics related to Romance philology. It focuses especially on Portugese and Spanish irregular verbs. It tries to answer several questions: 
+### Git Status
+Git status is your first line of defense when troubleshooting. It shows the current state of your working directory and staging area.
 
-+ Why are there irregular verbs? 
-+ How are Portuguese irregular verbs different from Spanish irregular verbs? 
-+ What is the role of Latin and Greek in these irregularities? 
-+ What about irregular verbs in other Romance languages?
-    + Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. 
-    + Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-    + Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-    + Excepteur sint occaecat cupidatat non proident.
-    
-Sunt in culpa qui officia deserunt mollit anim id est laborum.
+#### Command
+```bash
+git status
+```
 
-## Part 1: Review of Romance languages
+#### What It Shows
+* Untracked files
+* Changes staged for commit
+* Changes not staged for commit
+* Current branch information
 
-This section reviews Romance languages. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+#### Example Output
+```bash
+On branch main
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   example.txt
 
-##### Lecture videos
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        new-file.txt
+```
 
-+ [Lecture video 1](https://youtu.be/3MZeJED2yns) – This is a first lecture video.
-+ [Lecture video 2](https://youtu.be/8ihJsf-AXdA) – This is a another lecture video.
-+ [Lecture video 3](https://youtu.be/79MSNfp1rw0) – This is a third lecture video. It is quite short.
+### Git Diff
+Git diff helps you review changes between different Git states.
 
-##### Lecture notes
+#### Common Commands
+* `git diff` - Shows unstaged changes
+* `git diff --staged` - Shows staged changes
+* `git diff <commit-hash>` - Compares working directory with a specific commit
 
-+ [Lecture note 1](lecture1.pdf)
+#### Example Output
+```bash
+diff --git a/example.txt b/example.txt
+index d3b073..8c3a9c 100644
+--- a/example.txt
++++ b/example.txt
+@@ -1 +1 @@
+-Old line
++New line
+```
 
-##### Readings
+---
 
-+ [Paper 1](https://pascalmichaillat.org/1.pdf) – This is a first paper to read.
-+ [Paper 2](https://pascalmichaillat.org/2.pdf) – This paper builds on the first one.
-+ [Paper 3](https://pascalmichaillat.org/4.pdf) – This paper is more complex.
+## Common Issues and Solutions
 
-## Part 2: Portugese irregular verbs
+### Recovering from Unwanted Local Commits
 
-This section introduces Portugese irregular verbs. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+#### Scenario
+You've committed changes locally that you don't want to push.
 
-##### Lecture videos
+#### Solution Steps
 
-+ [Lecture video 4](https://youtu.be/IZI0_WwIyb8)
-+ [Lecture video 5](https://youtu.be/Qz7CCB1-gu8)
-+ [Lecture video 6](https://youtu.be/79MSNfp1rw0)
+1. **Unstage the commit but keep changes**
+   ```bash
+   git reset HEAD~1
+   ```
+   This removes the commit but preserves modifications in your working directory.
 
-##### Lecture notes
+2. **Optional: Discard changes completely**
+   ```bash
+   git checkout -- <file-name>
+   ```
+   This returns the file to its state in the previous commit.
 
-+ [Lecture note 2](lecture2.pdf)
+#### Example Workflow
+```bash
+# Initial unwanted commit
+git commit -m "Added unwanted_file.txt"
 
-##### Readings
+# Undo the commit
+git reset HEAD~1
 
-+ [Paper 4](https://pascalmichaillat.org/5.pdf) – This paper computes things. (Details about the simulations are presented in the paper's [online appendix](https://pascalmichaillat.org/5a.pdf).)
-+ [Paper 5](https://pascalmichaillat.org/3.pdf) – This paper proves things. (The paper's [online appendix](https://pascalmichaillat.org/3a.pdf) contains long proofs and extensions of the results.)
+# Optional: Remove changes
+git checkout -- unwanted_file.txt
+```
 
+### Reverting Pushed Changes
 
-## Part 3: Spanish irregular verbs
+#### Scenario 1: Safe Revert
+When you need to undo changes that are already pushed.
 
-This section quickly discusses irregular verbs in Spanish. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+```bash
+# Find the commit to revert
+git log --oneline
+1234abc Commit to revert
 
-##### Lecture videos
+# Create a reverting commit
+git revert 1234abc
+```
 
-+ [Lecture video 7](https://youtu.be/pIS8-mXG1oY)
-+ [Lecture video 8](https://youtu.be/FUaeNM8_fxs)
-+ [Optional lecture video](https://youtu.be/xjHVrx7jfdY)
+#### Scenario 2: Hard Reset (Use with Caution)
+For cases where you need to completely remove recent commits.
 
-##### Basic readings
+```bash
+# Find the safe commit
+git log --oneline
+7890def Newest commit (to remove)
+4567abc Safe commit
 
-+ [Paper 6](https://pascalmichaillat.org/10.pdf)
+# Reset and force push
+git reset --hard 4567abc
+git push origin main --force
+```
 
-##### Advanced readings
+⚠️ **Warning**: Force pushing rewrites history and can impact collaborators. Use only on private branches or after team coordination.
 
-+ [Paper 7](https://pascalmichaillat.org/11.pdf)
-+ [Paper 8](https://pascalmichaillat.org/12.pdf)
+---
 
-## Conclusion
+## Quick Reference
 
-This section concludes by comparing Portuguese and Spanish irregular verbs to irregular verbs in other Romance languages. 
+| Action | Command |
+|--------|---------|
+| Check status | `git status` |
+| View unstaged changes | `git diff` |
+| View staged changes | `git diff --staged` |
+| Undo last commit (keep changes) | `git reset HEAD~1` |
+| Discard file changes | `git checkout -- <file>` |
+| Revert commit (safe) | `git revert <commit-hash>` |
+| Reset to commit (destructive) | `git reset --hard <commit-hash>` |
 
-> Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst. Quisque non felis. Nullam vulputate libero quis ligula. Fusce scelerisque suscipit sapien. Suspendisse commodo ullamcorper magna. 
-> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+## Best Practices
 
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+1. **Pre-Commit Checklist**
+   * Run `git status` to verify changed files
+   * Use `git diff` to review modifications
+   * Commit related changes together
 
+2. **Safe Collaboration**
+   * Avoid force pushing to shared branches
+   * Use feature branches for isolation
+   * Make small, focused commits
+
+3. **Regular Maintenance**
+   * Keep commits atomic and well-described
+   * Review changes before pushing
+   * Communicate with team before destructive operations
+
+4. **Emergency Procedures**
+   * Always have a backup before major operations
+   * Document steps taken during troubleshooting
+   * Test recovery procedures on a separate branch first
+
+---
+
+## Working with .gitignore
+
+### What is .gitignore?
+A `.gitignore` file tells Git which files or directories to ignore in your project. This is useful for:
+* Build artifacts and compiled code
+* Dependencies and package directories
+* Environment and configuration files
+* System files
+* IDE and editor specific files
+* Log files and databases
+* Personal configuration files
+
+### Basic Syntax
+```bash
+# Single file
+example.txt
+
+# File pattern
+*.log
+
+# Directory
+node_modules/
+dist/
+
+# Negation (don't ignore)
+!important.log
+
+# Match any depth
+**/temp
+
+# Match specific depth
+foo/**/bar
+```
+
+### Common Patterns
+```gitignore
+# Dependencies
+node_modules/
+vendor/
+.virtualenv/
+
+# Build output
+dist/
+build/
+*.o
+*.exe
+
+# Environment files
+.env
+.env.local
+config.private.json
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database
+*.sqlite
+*.db
+
+# Coverage and test
+coverage/
+.nyc_output/
+```
+
+### Some common issues
+
+#### Fixing Already Tracked Files
+If files are already tracked by Git:
+```bash
+# Remove from Git tracking but keep locally
+git rm --cached filename
+
+# For directories
+git rm -r --cached directory/
+```
+
+#### File Still Being Tracked
+```bash
+# Clear Git cache
+git rm -r --cached .
+
+# Re-add all files
+git add .
+
+# Commit changes
+git commit -m "Apply new .gitignore rules"
+```
+
+#### Template Examples
+Language-specific templates available at:
+* https://github.com/github/gitignore
+* Use as starting points for your projects
+
+---
+
+## Additional Common Issues and Solutions
+
+### Recovering Deleted Commits
+
+If you ever accidentally delete a commit and want to recover it, you can use a combination of `git reflog`
+and `git reset`.
+
+#### Using reflog
+```bash
+# View reflog
+git reflog
+
+# Recover deleted commit
+git reset --hard HEAD@{n}
+```
+
+### Stashing Changes
+
+#### When to Use
+* Need to switch branches with uncommitted changes
+* Want to temporarily store changes without committing
+
+#### Common Commands
+```bash
+# Stash current changes
+git stash save "work in progress"
+
+# List stashes
+git stash list
+
+# Apply most recent stash
+git stash pop
+
+# Apply specific stash
+git stash apply stash@{n}
+
+# Drop specific stash
+git stash drop stash@{n}
+```
+
+### Merge Conflicts
+
+#### What Are Merge Conflicts?
+Merge conflicts occur when Git can't automatically resolve differences between two commits.
+
+#### How to Identify
+```bash
+$ git merge feature-branch
+Auto-merging file.txt
+CONFLICT (content): Merge conflict in file.txt
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+#### Resolving Conflicts
+1. **Identify conflicted files**
+   ```bash
+   git status
+   ```
+
+2. **Open the conflicted files**
+   Look for conflict markers:
+   ```
+   <<<<<<< HEAD
+   Your changes
+   =======
+   Their changes
+   >>>>>>> feature-branch
+   ```
+
+3. **Resolve the conflict**
+   * Choose one version
+   * Combine both versions
+   * Write a completely new solution
+
+4. **Mark as resolved**
+   ```bash
+   git add <resolved-file>
+   git commit -m "Resolve merge conflict"
+   ```
+
+### Branch Management Issues
+
+#### Renaming Branches
+```bash
+# Rename local branch
+git branch -m old-name new-name
+
+# Rename remote branch (delete old, push new)
+git push origin --delete old-name
+git push origin -u new-name
+```
+
+#### Deleting Branches
+```bash
+# Delete local branch
+git branch -d branch-name
+
+# Force delete local branch
+git branch -D branch-name
+
+# Delete remote branch
+git push origin --delete branch-name
+```
+
+### Remote Repository Issues
+
+#### Updating Remote URLs
+```bash
+# View current remote
+git remote -v
+
+# Change remote URL
+git remote set-url origin new-url
+```
+
+#### Handling Failed Pushes
+```bash
+# Pull with rebase
+git pull --rebase origin main
+
+# Force push (use carefully!)
+git push --force-with-lease origin branch-name
+```
+
+### Clean Up and Maintenance
+
+#### Removing Untracked Files
+```bash
+# Preview what will be deleted
+git clean -n
+
+# Remove untracked files
+git clean -f
+
+# Remove untracked files and directories
+git clean -fd
+```
+
+#### Cleaning Up Local Branches
+```bash
+# Remove stale remote-tracking branches
+git remote prune origin
+
+# List merged branches
+git branch --merged
+
+# List unmerged branches
+git branch --no-merged
+```
+
+### Recovery Commands
+```bash
+# Recover deleted file
+git checkout HEAD~1 -- path/to/deleted/file
+
+# Recover deleted branch
+git checkout -b recovered-branch commit-hash
+```
+
+---
+
+## Best Practices (Additional)
+
+1. **Commit Message Guidelines**
+   * Use present tense ("Add feature" not "Added feature")
+   * First line should be under 50 characters
+   * Include why the change was made
+   * Reference issue numbers if applicable
+
+2. **Branch Management**
+   * Delete branches after merging
+   * Keep branch names descriptive and consistent
+   * Use feature/, bugfix/, hotfix/ prefixes
+
+3. **Collaboration**
+   * Pull before pushing
+   * Use --force-with-lease instead of --force
+   * Tag important releases
+   * Write meaningful commit messages
+
+4. **Security**
+   * Use .gitignore for sensitive files
+   * Avoid committing credentials
+   * Regularly audit large files
+   * Review public repositories for sensitive data
