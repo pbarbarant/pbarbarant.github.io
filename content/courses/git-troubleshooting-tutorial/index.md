@@ -4,7 +4,7 @@ date: 2024-11-06
 lastmod: 2024-11-06
 tags: ["Git","Github", "Programming"]
 author: "Pierre-Louis Barbarant"
-description: "This graduate course presents classical results in Romance philology." 
+description: "A short tutorial to solve your typical git problems." 
 summary: "A short tutorial to solve your typical git problems." 
 cover:
     image: "cover.png"
