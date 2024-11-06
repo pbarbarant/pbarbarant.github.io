@@ -2,52 +2,52 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Pierre-Louis Barbarant</title>
-    <link>http://localhost:1313/</link>
+    <link>https://pbarbarant.github.io/</link>
     <description>Recent content on Pierre-Louis Barbarant</description>
     <generator>Hugo -- 0.136.5</generator>
     <language>en</language>
     <lastBuildDate>Wed, 06 Nov 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://pbarbarant.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Git Troubleshooting Guide</title>
-      <link>http://localhost:1313/courses/course1/</link>
+      <link>https://pbarbarant.github.io/courses/git-troubleshooting-tutorial/</link>
       <pubDate>Wed, 06 Nov 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/courses/course1/</guid>
+      <guid>https://pbarbarant.github.io/courses/git-troubleshooting-tutorial/</guid>
       <description>This graduate course presents classical results in Romance philology.</description>
     </item>
     <item>
       <title>Location</title>
-      <link>http://localhost:1313/location/</link>
+      <link>https://pbarbarant.github.io/location/</link>
       <pubDate>Wed, 08 May 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/location/</guid>
+      <guid>https://pbarbarant.github.io/location/</guid>
       <description>Office address of Pierre-Louis Barbarant.</description>
     </item>
     <item>
       <title>Your Inner Hedgehog</title>
-      <link>http://localhost:1313/publications/paper3/</link>
+      <link>https://pbarbarant.github.io/publications/paper3/</link>
       <pubDate>Tue, 06 Apr 2021 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/publications/paper3/</guid>
+      <guid>https://pbarbarant.github.io/publications/paper3/</guid>
       <description>This paper describes the inner hedgehog, a psychological condition widespread in academia. Published in the Journal of Socio-Experimental Psychology, 2021.</description>
     </item>
     <item>
       <title>List of Irregular Verbs Across Romance Languages</title>
-      <link>http://localhost:1313/software/data1/</link>
+      <link>https://pbarbarant.github.io/software/data1/</link>
       <pubDate>Thu, 07 Mar 2013 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/software/data1/</guid>
+      <guid>https://pbarbarant.github.io/software/data1/</guid>
       <description>This dataset contains all irregular verbs in known Romance languages.</description>
     </item>
     <item>
       <title>Unusual Uses For Olive Oil</title>
-      <link>http://localhost:1313/publications/paper1/</link>
+      <link>https://pbarbarant.github.io/publications/paper1/</link>
       <pubDate>Tue, 15 Jan 2013 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/publications/paper1/</guid>
+      <guid>https://pbarbarant.github.io/publications/paper1/</guid>
       <description>This paper reviews unusual uses for olive oil throughout the Mediterranean world. Published in the Journal of Oleic Science, 2013.</description>
     </item>
     <item>
       <title>The Finer Points of Sausage Dogs</title>
-      <link>http://localhost:1313/publications/paper2/</link>
+      <link>https://pbarbarant.github.io/publications/paper2/</link>
       <pubDate>Tue, 28 Dec 2004 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/publications/paper2/</guid>
+      <guid>https://pbarbarant.github.io/publications/paper2/</guid>
       <description>This paper studies the pulmonary efficiency of sausage dogs. Published in the Journal of Canine Science, 2004.</description>
     </item>
   </channel>

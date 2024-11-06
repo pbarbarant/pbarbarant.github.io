@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Courses on Pierre-Louis Barbarant</title>
-    <link>http://localhost:1313/courses/</link>
+    <link>https://pbarbarant.github.io/courses/</link>
     <description>Recent content in Courses on Pierre-Louis Barbarant</description>
     <generator>Hugo -- 0.136.5</generator>
     <language>en</language>
     <lastBuildDate>Wed, 06 Nov 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/courses/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://pbarbarant.github.io/courses/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Git Troubleshooting Guide</title>
-      <link>http://localhost:1313/courses/course1/</link>
+      <link>https://pbarbarant.github.io/courses/git-troubleshooting-tutorial/</link>
       <pubDate>Wed, 06 Nov 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/courses/course1/</guid>
+      <guid>https://pbarbarant.github.io/courses/git-troubleshooting-tutorial/</guid>
       <description>This graduate course presents classical results in Romance philology.</description>
     </item>
   </channel>

@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Git Troubleshooting Guide | Pierre-Louis Barbarant</title>
 <meta name="keywords" content="Git, Github, Programming">
 <meta name="description" content="This graduate course presents classical results in Romance philology.">
 <meta name="author" content="Pierre-Louis Barbarant">
-<link rel="canonical" href="http://localhost:1313/courses/course1/">
+<link rel="canonical" href="https://pbarbarant.github.io/courses/course1/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.e690afcd5c523330d5c8b4d746eb158361600a015e99518d4d246a6ccab0cc19.css" integrity="sha256-5pCvzVxSMzDVyLTXRusVg2FgCgFemVGNTSRqbMqwzBk=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="icon" href="https://pbarbarant.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://pbarbarant.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://pbarbarant.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://pbarbarant.github.io/apple-touch-icon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/courses/course1/">
+<link rel="alternate" hreflang="en" href="https://pbarbarant.github.io/courses/course1/">
 <noscript>
     <style>
         #theme-toggle,
@@ -29,13 +29,13 @@
 </noscript><meta property="og:title" content="Git Troubleshooting Guide" />
 <meta property="og:description" content="This graduate course presents classical results in Romance philology." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/courses/course1/" />
-<meta property="og:image" content="http://localhost:1313/cover.png" /><meta property="article:section" content="courses" />
+<meta property="og:url" content="https://pbarbarant.github.io/courses/course1/" />
+<meta property="og:image" content="https://pbarbarant.github.io/cover.png" /><meta property="article:section" content="courses" />
 <meta property="article:published_time" content="2024-11-06T00:00:00+00:00" />
 <meta property="article:modified_time" content="2024-11-06T00:00:00+00:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="http://localhost:1313/cover.png" />
+<meta name="twitter:image" content="https://pbarbarant.github.io/cover.png" />
 <meta name="twitter:title" content="Git Troubleshooting Guide"/>
 <meta name="twitter:description" content="This graduate course presents classical results in Romance philology."/>
 
@@ -49,13 +49,13 @@
       "@type": "ListItem",
       "position":  1 ,
       "name": "Courses",
-      "item": "http://localhost:1313/courses/"
+      "item": "https://pbarbarant.github.io/courses/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "Git Troubleshooting Guide",
-      "item": "http://localhost:1313/courses/course1/"
+      "item": "https://pbarbarant.github.io/courses/course1/"
     }
   ]
 }
@@ -73,7 +73,7 @@
   "articleBody": "Diagnostic Tools Git Status Git status is your first line of defense when troubleshooting. It shows the current state of your working directory and staging area.\nCommand git status What It Shows Untracked files Changes staged for commit Changes not staged for commit Current branch information Example Output On branch main Changes not staged for commit: (use \"git add ...\" to update what will be committed) (use \"git restore ...\" to discard changes in working directory) modified: example.txt Untracked files: (use \"git add ...\" to include in what will be committed) new-file.txt Git Diff Git diff helps you review changes between different Git states.\nCommon Commands git diff - Shows unstaged changes git diff --staged - Shows staged changes git diff - Compares working directory with a specific commit Example Output diff --git a/example.txt b/example.txt index d3b073..8c3a9c 100644 --- a/example.txt +++ b/example.txt @@ -1 +1 @@ -Old line +New line Common Issues and Solutions Recovering from Unwanted Local Commits Scenario You’ve committed changes locally that you don’t want to push.\nSolution Steps Unstage the commit but keep changes\ngit reset HEAD~1 This removes the commit but preserves modifications in your working directory.\nOptional: Discard changes completely\ngit checkout -- This returns the file to its state in the previous commit.\nExample Workflow # Initial unwanted commit git commit -m \"Added unwanted_file.txt\" # Undo the commit git reset HEAD~1 # Optional: Remove changes git checkout -- unwanted_file.txt Reverting Pushed Changes Scenario 1: Safe Revert When you need to undo changes that are already pushed.\n# Find the commit to revert git log --oneline 1234abc Commit to revert # Create a reverting commit git revert 1234abc Scenario 2: Hard Reset (Use with Caution) For cases where you need to completely remove recent commits.\n# Find the safe commit git log --oneline 7890def Newest commit (to remove) 4567abc Safe commit # Reset and force push git reset --hard 4567abc git push origin main --force ⚠️ Warning: Force pushing rewrites history and can impact collaborators. Use only on private branches or after team coordination.\nQuick Reference Action Command Check status git status View unstaged changes git diff View staged changes git diff --staged Undo last commit (keep changes) git reset HEAD~1 Discard file changes git checkout -- Revert commit (safe) git revert Reset to commit (destructive) git reset --hard Best Practices Pre-Commit Checklist\nRun git status to verify changed files Use git diff to review modifications Commit related changes together Safe Collaboration\nAvoid force pushing to shared branches Use feature branches for isolation Make small, focused commits Regular Maintenance\nKeep commits atomic and well-described Review changes before pushing Communicate with team before destructive operations Emergency Procedures\nAlways have a backup before major operations Document steps taken during troubleshooting Test recovery procedures on a separate branch first Working with .gitignore What is .gitignore? A .gitignore file tells Git which files or directories to ignore in your project. This is useful for:\nBuild artifacts and compiled code Dependencies and package directories Environment and configuration files System files IDE and editor specific files Log files and databases Personal configuration files Basic Syntax # Single file example.txt # File pattern *.log # Directory node_modules/ dist/ # Negation (don't ignore) !important.log # Match any depth **/temp # Match specific depth foo/**/bar Common Patterns # Dependencies node_modules/ vendor/ .virtualenv/ # Build output dist/ build/ *.o *.exe # Environment files .env .env.local config.private.json # IDE files .idea/ .vscode/ *.sublime-project *.sublime-workspace # System files .DS_Store Thumbs.db # Logs *.log npm-debug.log* yarn-debug.log* yarn-error.log* # Database *.sqlite *.db # Coverage and test coverage/ .nyc_output/ Some common issues Fixing Already Tracked Files If files are already tracked by Git:\n# Remove from Git tracking but keep locally git rm --cached filename # For directories git rm -r --cached directory/ File Still Being Tracked # Clear Git cache git rm -r --cached . # Re-add all files git add . # Commit changes git commit -m \"Apply new .gitignore rules\" Template Examples Language-specific templates available at:\nhttps://github.com/github/gitignore Use as starting points for your projects Additional Common Issues and Solutions Recovering Deleted Commits If you ever accidentally delete a commit and want to recover it, you can use a combination of git reflog and git reset.\nUsing reflog # View reflog git reflog # Recover deleted commit git reset --hard HEAD@{n} Stashing Changes When to Use Need to switch branches with uncommitted changes Want to temporarily store changes without committing Common Commands # Stash current changes git stash save \"work in progress\" # List stashes git stash list # Apply most recent stash git stash pop # Apply specific stash git stash apply stash@{n} # Drop specific stash git stash drop stash@{n} Merge Conflicts What Are Merge Conflicts? Merge conflicts occur when Git can’t automatically resolve differences between two commits.\nHow to Identify $ git merge feature-branch Auto-merging file.txt CONFLICT (content): Merge conflict in file.txt Automatic merge failed; fix conflicts and then commit the result. Resolving Conflicts Identify conflicted files\ngit status Open the conflicted files Look for conflict markers:\n\u003c\u003c\u003c\u003c\u003c\u003c\u003c HEAD Your changes ======= Their changes \u003e\u003e\u003e\u003e\u003e\u003e\u003e feature-branch Resolve the conflict\nChoose one version Combine both versions Write a completely new solution Mark as resolved\ngit add git commit -m \"Resolve merge conflict\" Branch Management Issues Renaming Branches # Rename local branch git branch -m old-name new-name # Rename remote branch (delete old, push new) git push origin --delete old-name git push origin -u new-name Deleting Branches # Delete local branch git branch -d branch-name # Force delete local branch git branch -D branch-name # Delete remote branch git push origin --delete branch-name Remote Repository Issues Updating Remote URLs # View current remote git remote -v # Change remote URL git remote set-url origin new-url Handling Failed Pushes # Pull with rebase git pull --rebase origin main # Force push (use carefully!) git push --force-with-lease origin branch-name Clean Up and Maintenance Removing Untracked Files # Preview what will be deleted git clean -n # Remove untracked files git clean -f # Remove untracked files and directories git clean -fd Cleaning Up Local Branches # Remove stale remote-tracking branches git remote prune origin # List merged branches git branch --merged # List unmerged branches git branch --no-merged Recovery Commands # Recover deleted file git checkout HEAD~1 -- path/to/deleted/file # Recover deleted branch git checkout -b recovered-branch commit-hash Best Practices (Additional) Commit Message Guidelines\nUse present tense (“Add feature” not “Added feature”) First line should be under 50 characters Include why the change was made Reference issue numbers if applicable Branch Management\nDelete branches after merging Keep branch names descriptive and consistent Use feature/, bugfix/, hotfix/ prefixes Collaboration\nPull before pushing Use –force-with-lease instead of –force Tag important releases Write meaningful commit messages Security\nUse .gitignore for sensitive files Avoid committing credentials Regularly audit large files Review public repositories for sensitive data ",
   "wordCount" : "1140",
   "inLanguage": "en",
-  "image":"http://localhost:1313/cover.png","datePublished": "2024-11-06T00:00:00Z",
+  "image":"https://pbarbarant.github.io/cover.png","datePublished": "2024-11-06T00:00:00Z",
   "dateModified": "2024-11-06T00:00:00Z",
   "author":{
     "@type": "Person",
@@ -81,14 +81,14 @@
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/courses/course1/"
+    "@id": "https://pbarbarant.github.io/courses/course1/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Pierre-Louis Barbarant",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.ico"
+      "url": "https://pbarbarant.github.io/favicon.ico"
     }
   }
 }
@@ -129,8 +129,8 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Pierre-Louis Barbarant">
-                <img src="http://localhost:1313/favicon.ico" alt="" aria-label="logo"
+            <a href="https://pbarbarant.github.io/" accesskey="h" title="Pierre-Louis Barbarant">
+                <img src="https://pbarbarant.github.io/favicon.ico" alt="" aria-label="logo"
                     height="18"
                     width="18">Pierre-Louis Barbarant</a>
             <div class="logo-switches">
@@ -138,17 +138,17 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/publications/" title="Publications">
+                <a href="https://pbarbarant.github.io/publications/" title="Publications">
                     <span>Publications</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/courses/" title="Courses">
+                <a href="https://pbarbarant.github.io/courses/" title="Courses">
                     <span>Courses</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/software/" title="Software">
+                <a href="https://pbarbarant.github.io/software/" title="Software">
                     <span>Software</span>
                 </a>
             </li>
@@ -613,16 +613,16 @@ Look for conflict markers:</p>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/git/">Git</a></li>
-      <li><a href="http://localhost:1313/tags/github/">Github</a></li>
-      <li><a href="http://localhost:1313/tags/programming/">Programming</a></li>
+      <li><a href="https://pbarbarant.github.io/tags/git/">Git</a></li>
+      <li><a href="https://pbarbarant.github.io/tags/github/">Github</a></li>
+      <li><a href="https://pbarbarant.github.io/tags/programming/">Programming</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2024 <a href="http://localhost:1313/">Pierre-Louis Barbarant</a></span> ·     
+    <span>&copy; 2024 <a href="https://pbarbarant.github.io/">Pierre-Louis Barbarant</a></span> ·     
     <span>
     Powered by 
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
