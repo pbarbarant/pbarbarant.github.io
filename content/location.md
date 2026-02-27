@@ -3,7 +3,6 @@ title: "Location"
 date: 2024-05-08
 hidemeta: true
 description: "Office address of Pierre-Louis Barbarant."
-
 ---
 
 ---
@@ -16,6 +15,3 @@ Campus de l’École Polytechnique\
 91120 Palaiseau, France
 
 ---
-
-
-

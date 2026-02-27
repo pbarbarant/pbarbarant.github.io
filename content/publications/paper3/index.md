@@ -1,27 +1,34 @@
 ---
-title: "Your Inner Hedgehog" 
+draft: true
+title: "Your Inner Hedgehog"
 date: 2021-04-06
 lastmod: 2024-10-18
-tags: ["social psychology","inner hedgehog","academia","experimental psychology","invasive thoughts"]
+tags:
+  [
+    "social psychology",
+    "inner hedgehog",
+    "academia",
+    "experimental psychology",
+    "invasive thoughts",
+  ]
 author: ["Hilda Schreiber-Ziegler", "Moritz-Maria von Igelfeld"]
-description: "This paper describes the inner hedgehog, a psychological condition widespread in academia. Published in the Journal of Socio-Experimental Psychology, 2021." 
-summary: "Using several case studies, this paper describes the inner hedgehog, a psychological condition widespread in academic occupations. The condition has lasting consequences and no known cure." 
+description: "This paper describes the inner hedgehog, a psychological condition widespread in academia. Published in the Journal of Socio-Experimental Psychology, 2021."
+summary: "Using several case studies, this paper describes the inner hedgehog, a psychological condition widespread in academic occupations. The condition has lasting consequences and no known cure."
 cover:
-    image: "paper3.png"
-    alt: "Vizualisation of an inner hedgehog"
-    relative: false
+  image: "paper3.png"
+  alt: "Vizualisation of an inner hedgehog"
+  relative: false
 editPost:
-    URL: "https://github.com/pmichaillat/hugo-website"
-    Text: "Journal of Socio-Experimental Psychology"
-
+  URL: "https://github.com/pmichaillat/hugo-website"
+  Text: "Journal of Socio-Experimental Psychology"
 ---
 
 ---
 
 ##### Download
 
-+ [Paper](paper3.pdf)
-+ [Raw data](https://github.com/pmichaillat/recession-indicator)
+- [Paper](paper3.pdf)
+- [Raw data](https://github.com/pmichaillat/recession-indicator)
 
 ---
 
@@ -33,7 +40,7 @@ Using several case studies, this paper describes the inner hedgehog, a psycholog
 
 ##### Citation
 
-Schreiber-Ziegler, Hilda, and Moritz-Maria von Igelfeld. 2021. "Your Inner Hedgehog." *Journal of Socio-Experimental Psychology* 131 (2): 1299–1302.
+Schreiber-Ziegler, Hilda, and Moritz-Maria von Igelfeld. 2021. "Your Inner Hedgehog." _Journal of Socio-Experimental Psychology_ 131 (2): 1299–1302.
 
 ```BibTeX
 @article{SZI21,
@@ -50,4 +57,4 @@ pages = {1299--1302}}
 
 ##### Related material
 
-+ [Nontechnical summary](https://www.alexandermccallsmith.com/book/your-inner-hedgehog)
+- [Nontechnical summary](https://www.alexandermccallsmith.com/book/your-inner-hedgehog)
