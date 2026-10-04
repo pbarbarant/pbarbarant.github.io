@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Renaissance Midterm: Globe and Guessing Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e6ebf1;--panel:#f6f4ef;--ink:#1b2233;--muted:#5d6678;--ocean:#b9cfe3;--land:#e9dcbd;--line:#c2ccd8;--grat:rgba(30,50,90,.12);--card:#fffdf8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b111f;--panel:#121a2c;--ink:#e8e6df;--muted:#97a0b3;--ocean:#16294d;--land:#5c523b;--line:#26324b;--grat:rgba(180,200,255,.1);--card:#18223a}}
+:root[data-theme="dark"]{--bg:#0b111f;--panel:#121a2c;--ink:#e8e6df;--muted:#97a0b3;--ocean:#16294d;--land:#5c523b;--line:#26324b;--grat:rgba(180,200,255,.1);--card:#18223a}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Instrument Sans",system-ui,sans-serif;font-size:14px;overflow:hidden}
+#app{height:100%;display:grid;grid-template-columns:1fr 340px}
+#stage{position:relative;min-width:0;min-height:0}
+#globe{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+#globe:active{cursor:grabbing}
+h1{position:absolute;left:20px;top:14px;margin:0;font:700 26px/1.1 "Cormorant Garamond",Georgia,serif;pointer-events:none;max-width:60%}
+h1 small{display:block;font:400 12px "Instrument Sans",sans-serif;color:var(--muted);margin-top:4px}
+#zoom{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;gap:6px}
+#zoom button{width:34px;height:34px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;font-size:18px;cursor:pointer}
+#tip{position:fixed;pointer-events:none;background:var(--card);color:var(--ink);border:1px solid var(--line);border-left-width:5px;border-radius:6px;padding:8px 10px;max-width:260px;font-size:12.5px;line-height:1.35;box-shadow:0 6px 20px rgba(0,0,0,.25);display:none;z-index:5}
+#tip b,#card b.t{font:700 16px/1.2 "Cormorant Garamond",Georgia,serif;display:block}
+#card{position:absolute;left:16px;bottom:16px;width:min(360px,calc(100% - 32px));background:var(--card);border:1px solid var(--line);border-left-width:8px;border-radius:8px;padding:14px 16px;display:none;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#card b.t{font-size:21px;margin-bottom:6px}
+#card dl{margin:0;display:grid;grid-template-columns:70px 1fr;gap:3px 10px}
+#card dt{color:var(--muted)}#card dd{margin:0}
+#card a{display:inline-block;margin-top:10px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+#card .x{position:absolute;right:8px;top:6px;border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer}
+#side{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+#tools{padding:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+#q{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+#tools label{color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
+#list{overflow:auto;flex:1;margin:0;padding:4px 0}
+.row{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:0;background:none;color:var(--ink);font:inherit;padding:7px 12px;cursor:pointer;border-left:4px solid transparent}
+.row:hover,.row.on{background:var(--bg)}
+.row.on{border-left-color:var(--c)}
+.dot{flex:none;width:14px;height:14px;border-radius:50%;background:var(--c);border:2px solid #fff}
+.row .t{display:block;font-weight:600;line-height:1.25}.row .a{display:block;color:var(--muted);font-size:12px}
+.quiz .row .tx{filter:blur(6px);transition:filter .15s}.quiz .row:hover .tx,.quiz .row.on .tx{filter:none}
+.land{fill:var(--land);stroke:var(--bg);stroke-width:.5}
+.mk{stroke:#fff;stroke-width:2;cursor:pointer;transition:r .12s}
+.mk.hi{stroke:var(--ink);stroke-width:3}
+#err{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:40px}
+@media (max-width:760px){#app{grid-template-columns:1fr;grid-template-rows:58% 42%}#side{border-left:0;border-top:1px solid var(--line)}h1{font-size:20px}#card{bottom:8px;left:8px;width:calc(100% - 16px);padding:10px 12px}#card b.t{font-size:17px}}
+#gplay{position:absolute;right:58px;top:14px;height:34px;padding:0 14px;border:0;border-radius:8px;background:var(--ink);color:var(--bg);font:600 13px "Instrument Sans",sans-serif;cursor:pointer}
+#game{position:fixed;inset:0;z-index:10;background:var(--bg);display:none;overflow:auto;padding:16px}
+#gw{max-width:980px;margin:0 auto}
+#gh{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+#gh b{font:700 28px "Cormorant Garamond",Georgia,serif;margin-right:auto}
+#gh span,#gh label{color:var(--muted);font-size:13px}
+.gbtn{border:1px solid var(--line);background:var(--ink);color:var(--bg);border-radius:8px;padding:9px 16px;font:600 14px "Instrument Sans",sans-serif;cursor:pointer;margin:4px 6px 4px 0}
+.gbtn.ghost{background:var(--panel);color:var(--ink)}
+.gst{text-align:center;color:var(--muted);margin-bottom:8px}
+#gimg{display:block;margin:0 auto 12px;max-height:36vh;max-width:100%;border:10px solid #b88a2e;outline:2px solid #6d4f12;box-shadow:0 12px 30px rgba(0,0,0,.35);background:#888}
+.gq{text-align:center;font:700 20px "Cormorant Garamond",Georgia,serif;margin:6px 0 10px}
+#gopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt b{font:700 17px/1.2 "Cormorant Garamond",Georgia,serif}.opt span{font-size:12.5px;color:var(--muted)}
+.opt.good{border-color:#2e9d5b;background:rgba(46,157,91,.18)}.opt.bad{border-color:#d1453b;background:rgba(209,69,59,.16)}
+#gfb{text-align:center;margin-top:10px}#gfb a{color:var(--ink);font-weight:600}
+.miss{max-width:560px;margin:10px auto;text-align:left;line-height:1.5}
+@media (max-width:760px){#gopts{grid-template-columns:1fr}#gplay{right:58px;top:60px}}
+.rec{display:grid;grid-template-columns:70px 1fr;gap:2px 10px;max-width:560px;margin:0 auto 10px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px}.rec dt{color:var(--muted)}.rec dd{margin:0;font-weight:600}.rec dd.q{color:var(--muted);font-weight:400}#gopts{max-width:760px;margin:0 auto}
+.th{display:block;width:100%;height:140px;object-fit:contain;background:var(--bg);margin-bottom:6px;border-radius:4px}.cth{display:block;max-width:100%;max-height:26vh;margin:0 auto 8px;border-radius:4px;border:1px solid var(--line)}#rv{position:fixed;inset:0;z-index:11;background:var(--bg);display:none;overflow:auto;padding:16px}#rh{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}#rh b{font:700 26px "Cormorant Garamond",Georgia,serif}#rh span{color:var(--muted);font-size:13px;margin-right:auto}#rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}.rc{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:5px}.rc.off{opacity:.55}.rc img,.rc .ph{height:170px;object-fit:contain;background:var(--bg);border-radius:4px}.rc .ph{display:flex;align-items:center;justify-content:center;color:var(--muted)}.rc b{font:700 16px/1.2 "Cormorant Garamond",Georgia,serif}.rc span{font-size:12px;color:var(--muted)}.sb{display:inline-block;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:4px 8px;margin:2px 4px 2px 0;font:600 12px "Instrument Sans",sans-serif;cursor:pointer;text-decoration:none}.fixb{margin-left:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:3px 8px;font:600 12px "Instrument Sans",sans-serif;cursor:pointer}.pair{display:flex;gap:4px}.pair img{flex:1 1 0;min-width:0;object-fit:contain;background:var(--bg);border-radius:4px}.pair.th{height:140px;margin-bottom:6px}.pair.th img{height:140px}.pair.cth{display:flex;margin:0 auto 8px;max-height:26vh}.pair.cth img{max-height:26vh;border:1px solid var(--line)}.pair.rv img{height:170px}.pair.gp{display:flex;justify-content:center;margin:0 auto 12px;max-width:900px}.pair.gp img{flex:0 1 auto;max-height:36vh;max-width:50%;border:10px solid #b88a2e;outline:2px solid #6d4f12;box-shadow:0 12px 30px rgba(0,0,0,.35)}.pair.gp img:only-child{max-width:100%}</style>
+</head>
+<body>
+<div id="app">
+ <div id="stage">
+  <svg id="globe"></svg>
+  <h1>Renaissance art, midterm list<small>Drag to turn, scroll or pinch buttons to zoom, click a dot for details</small></h1>
+  <button id="gplay">Play the guessing game</button>
+<div id="zoom"><button id="zi" aria-label="Zoom in">+</button><button id="zo" aria-label="Zoom out">&minus;</button><button id="zr" aria-label="Reset view" style="font-size:13px">&#8634;</button></div>
+  <div id="card"><button class="x" aria-label="Close">&times;</button><div id="cardbody"></div></div>
+  <div id="err">The map libraries could not be loaded. Check your connection and reload.</div>
+ </div>
+ <aside id="side">
+  <div id="tools">
+   <input id="q" type="search" placeholder="Search title, artist, place" aria-label="Search">
+   <button class="gbtn ghost" id="rvbtn" style="margin:0">Review / fix pictures</button><label><input type="checkbox" id="quiz"> Blur list text (test yourself)</label>
+  </div>
+  <div id="list"></div>
+ </aside>
+</div>
+<div id="game"><div id="gw"><div id="gh"><b>Masterpiece Mugshots</b><span id="gs"></span><label><input type="checkbox" id="ghard"> Hard mode (type answers)</label><button class="gbtn ghost" id="rvbtn2">Review / fix pictures</button><button class="gbtn ghost" id="gx">Back to globe</button></div><div id="gb"></div></div></div>
+<div id="rv"><div id="rw"><div id="rh"><b>Review pictures</b><span>Click "Next picture" until it matches. Fixes are saved in this browser.</span><button class="gbtn ghost" id="rcopy">Copy my pictures (send to Claude)</button><button class="gbtn" id="rx">Close</button></div><div id="rgrid"></div></div></div><div id="tip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@3.5.17/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson@1.6.27/build/topojson.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datamaps@0.5.9/dist/datamaps.world.min.js"></script>
+<script>
+(function(){
+"use strict";
+var CITY={FLO:[43.7696,11.2558],PAD:[45.4064,11.8768],SIE:[43.3188,11.3308],MON:[41.5933,1.8377],ORO:[45.6275,7.9786],PAR:[48.8606,2.3376],BUD:[47.4979,19.0402],NYC:[40.7794,-73.9632],LON:[51.5089,-0.1283],MAD:[40.4138,-3.6921],GHE:[51.0543,3.7174],PHI:[39.9526,-75.1652],BAL:[39.2975,-76.616],TOM:[39.603,-8.4103],MAN:[45.1564,10.7914],BOS:[42.3383,-71.099],PAL:[38.1157,13.3615],NAP:[40.8518,14.2681],BER:[52.5096,13.3667],ORV:[42.7185,12.1108]};
+// city, title, artist, date, medium, location
+var D=[
+["FLO","Virgin and Child with Angels","Cimabue","c. 1280–85","Tempera on panel","Uffizi, Florence"],
+["FLO","Ognissanti Madonna","Giotto","c. 1310","Tempera on panel","Uffizi, Florence"],
+["PAD","The Betrayal of Christ","Giotto","c. 1303","Fresco","Arena Chapel, Padua"],
+["SIE","Maestà Altarpiece","Duccio","c. 1308–11","Tempera and gold on panel","Siena Cathedral, Siena"],
+["MON","Black Madonna of Montserrat","Unknown","12th century","Polychrome wood","Santa Maria de Montserrat, Spain"],
+["ORO","Black Madonna of Oropa","Unknown","13th century","Polychrome wood","Oropa, Biella, Italy"],
+["FLO","Sacrifice of Isaac","Filippo Brunelleschi","1401–02","Gilded bronze","Bargello Museum, Florence"],
+["FLO","Sacrifice of Isaac","Lorenzo Ghiberti","1401–02","Gilded bronze","Bargello Museum, Florence"],
+["FLO","St. John the Baptist","Lorenzo Ghiberti","c. 1410","Bronze","Orsanmichele, Florence"],
+["FLO","Jacob and Esau, Gates of Paradise","Lorenzo Ghiberti","1425–52","Gilded bronze","Museo dell'Opera del Duomo, Florence"],
+["FLO","St. George","Donatello","c. 1415–18","Marble","Orsanmichele, Florence"],
+["FLO","Florence Cathedral (bell tower by Giotto, dome by Brunelleschi)","Begun 1296; Giotto (tower 1334–48); Brunelleschi (dome 1446–61)","Begun 1296","Architecture","Florence"],
+["FLO","Old Sacristy","Filippo Brunelleschi","1418–28","Architecture","Church of San Lorenzo, Florence"],
+["FLO","Trinity","Masaccio","1425–28","Fresco","Santa Maria Novella, Florence"],
+["FLO","Tribute Money","Masaccio","1426–27","Fresco","Brancacci Chapel, Santa Maria del Carmine, Florence"],
+["PAR","Flagellation of Christ","Jacopo Bellini","c. 1450","Leadpoint on parchment drawing","Louvre, Paris"],
+["BUD","St Thomas in Prayer","Sassetta","1423","Tempera on wood","Szépmûvészeti Múzeum, Budapest"],
+["NYC","Merode Altarpiece","Robert Campin and workshop","c. 1427–32","Oil on wood","The Met, New York"],
+["PAR","Rolin Madonna","Jan van Eyck","c. 1435","Oil on panel","Louvre, Paris"],
+["LON","Arnolfini Portrait","Jan van Eyck","1434","Oil on wood","National Gallery, London"],
+["LON","Portrait of a Man (Self-Portrait?)","Jan van Eyck","1433","Oil on wood","National Gallery, London"],
+["MAD","Deposition","Rogier van der Weyden","c. 1435","Oil on panel","Museo del Prado, Madrid"],
+["GHE","Ghent Altarpiece","Hubert and Jan van Eyck","c. 1425–32","Oil on wood","St. Bavo Cathedral, Ghent"],
+["PHI","Adoration of the Magi","Master of the Morrison Triptych","c. 1504","Not on list","Philadelphia"],
+["BAL","Adoration of the Magi","William Stetter","1526","Oil on panel","The Walters Museum, Baltimore"],
+["NYC","Kongo crucifix","Kongo artist","16th–17th century","Brass","The Met, New York"],
+["NYC","Hip mask, Effigy of the Queen Mother of King Esigie","Edo artist, Benin","16th century","Ivory","The Met, New York (from Benin)"],
+["LON","Saltcellar","Bini artist, Edo peoples, Kingdom of Benin","c. 1525–1600","Ivory","The British Museum, London"],
+["TOM","Window of the Chapter House","Diogo de Arruda","1510–13","Architecture","Convent of Christ, Tomar, Portugal"],
+["TOM","Entrance of the Convent of Christ","João de Castilho","c. 1530","Architecture","Convent of Christ, Tomar, Portugal"],
+["FLO","The Mocking of Christ","Fra Angelico","1439–43","Fresco","Museo di San Marco, Florence"],
+["FLO","Annunciation","Fra Angelico","1440–45","Fresco","San Marco, friar's cell, Florence"],
+["FLO","David","Donatello","c. 1440–43","Bronze","Bargello Museum, Florence"],
+["FLO","Procession of the Magi","Benozzo Gozzoli","1459","Fresco","Chapel of the Medici Palace, Florence"],
+["MAN","The Court of Gonzaga","Andrea Mantegna","1465–74","Oil on plaster","Camera degli Sposi, Ducal Palace, Mantua"],
+["MAN","Oculus (ceiling)","Andrea Mantegna","1465–74","Oil on plaster","Camera degli Sposi, Ducal Palace, Mantua"],
+["LON","The Sultan Mehmed II","Gentile Bellini","1480","Oil on canvas","National Gallery, London"],
+["BOS","Seated Scribe","Gentile Bellini","1480","Pen and brown ink with watercolor and gold on paper","Isabella Stewart Gardner Museum, Boston"],
+["PAL","Annunciate Virgin","Antonello da Messina","c. 1476","Oil on panel","Galleria Nazionale della Sicilia, Palermo"],
+["NYC","St. Francis in Ecstasy","Giovanni Bellini","c. 1480","Oil and tempera on panel","Frick Collection, New York"],
+["NAP","The Transfiguration","Giovanni Bellini","c. 1480","Oil on panel","Museo di Capodimonte, Naples"],
+["FLO","Annunciation","Leonardo da Vinci","c. 1473","Tempera and oil on panel","Uffizi, Florence"],
+["PAR","Virgin of the Rocks","Leonardo da Vinci","1483–90","Oil on panel","Louvre, Paris"],
+["BER","Portrait of a Woman","Antonio del Pollaiuolo","1460–65","Oil and tempera on poplar panel","Staatliche Museen, Berlin"],
+["FLO","Birth of Venus","Botticelli","c. 1485","Tempera on canvas","Uffizi, Florence"],
+["FLO","Madonna and Child","Botticelli","1481–85","Tempera on panel","Uffizi Gallery, Florence"],
+["LON","Mystic Nativity","Botticelli","c. 1499","Tempera on canvas","National Gallery, London"],
+["FLO","St. Philip Casting out the Demon","Filippino Lippi","1493","Fresco","Strozzi Chapel, Santa Maria Novella, Florence"],
+["ORV","Last Judgment","Luca Signorelli","1499–1502","Fresco","Orvieto Cathedral"]
+];
+var count={},items=D.map(function(r,i){
+  var n=count[r[0]]=(count[r[0]]||0),base=CITY[r[0]];count[r[0]]++;
+  var ang=n*2.39996,rad=n?0.1*Math.sqrt(n):0;
+  return {i:i,city:r[0],title:r[1],artist:r[2],date:r[3],medium:r[4],place:r[5],
+    lat:base[0]+rad*Math.sin(ang),lon:base[1]+rad*Math.cos(ang)/Math.cos(base[0]*Math.PI/180),
+    color:"hsl("+((i*137.508)%360).toFixed(1)+","+(62+(i%3)*10)+"%,"+(46+(i%2)*10)+"%)"};
+});
+var size={};items.forEach(function(d){size[d.city]=(size[d.city]||0)+1});
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function link(d){return "https://www.google.com/search?tbm=isch&q="+encodeURIComponent(d.title+" "+d.artist)}
+
+if(typeof d3==="undefined"||typeof topojson==="undefined"||typeof Datamap==="undefined"){document.getElementById("err").style.display="flex";return}
+var topo=Datamap.prototype.worldTopo,land=topojson.feature(topo,topo.objects.world);
+
+var svg=d3.select("#globe"),W,H,R,zoom=1,sel=null;
+var proj=d3.geo.orthographic().clipAngle(90).rotate([-11,-40]);
+var path=d3.geo.path().projection(proj);
+var gOcean=svg.append("circle").style("fill","var(--ocean)"),
+    gLand=svg.append("path").datum(land).attr("class","land"),
+    gGrat=svg.append("path").datum(d3.geo.graticule()()).attr("fill","none").style("stroke","var(--grat)"),
+    gRim=svg.append("circle").attr("fill","none").style("stroke","var(--line)").attr("stroke-width",2),
+    gM=svg.append("g");
+var marks=gM.selectAll("circle").data(items).enter().append("circle").attr("class","mk").attr("fill",function(d){return d.color})
+  .attr("r",6.5);
+
+function render(){
+  var rot=proj.rotate(),c=[-rot[0],-rot[1]];
+  gOcean.attr("cx",W/2).attr("cy",H/2).attr("r",proj.scale());
+  gRim.attr("cx",W/2).attr("cy",H/2).attr("r",proj.scale());
+  gLand.attr("d",path);gGrat.attr("d",path);
+  marks.each(function(d){
+    var p=proj([d.lon,d.lat]),vis=d3.geo.distance(c,[d.lon,d.lat])<1.52;
+    d3.select(this).attr("cx",p[0]).attr("cy",p[1]).style("display",vis?null:"none");
+  });
+}
+function resize(){
+  var b=document.getElementById("stage").getBoundingClientRect();W=b.width;H=b.height;
+  R=Math.min(W,H)/2*0.9;proj.translate([W/2,H/2]).scale(R*zoom);render();
+}
+function setZoom(z){zoom=Math.max(1,Math.min(90,z));proj.scale(R*zoom);render()}
+function fly(lon,lat,z){
+  svg.transition().duration(1100).tween("fly",function(){
+    var r=d3.interpolate(proj.rotate(),[-lon,-lat]),s=d3.interpolate(zoom,z);
+    return function(t){zoom=s(t);proj.rotate(r(t)).scale(R*zoom);render()}
+  });
+}
+
+// drag, wheel, buttons
+svg.call(d3.behavior.drag().on("drag",function(){
+  svg.interrupt();
+  var r=proj.rotate(),k=0.28/Math.sqrt(zoom);
+  proj.rotate([r[0]+d3.event.dx*k,Math.max(-90,Math.min(90,r[1]-d3.event.dy*k))]);render();
+}));
+svg.on("wheel.zoom",function(){d3.event.preventDefault();setZoom(zoom*Math.exp(-d3.event.deltaY*0.0018))});
+document.getElementById("zi").onclick=function(){setZoom(zoom*1.6)};
+document.getElementById("zo").onclick=function(){setZoom(zoom/1.6)};
+document.getElementById("zr").onclick=function(){select(null);fly(11,40,1)};
+
+// tooltip
+var tip=document.getElementById("tip");
+function showTip(d,ev){
+  tip.style.borderLeftColor=d.color;
+  tip.innerHTML=thumb(d,"th")+"<b>"+esc(d.title)+"</b>"+esc(d.artist)+"<br>"+esc(d.date)+"<br>"+esc(d.place);
+  tip.style.display="block";moveTip(ev);
+}
+function moveTip(ev){
+  var x=ev.clientX+14,y=ev.clientY+14,w=tip.offsetWidth,h=tip.offsetHeight;
+  if(x+w>innerWidth-8)x=ev.clientX-w-14;if(y+h>innerHeight-8)y=ev.clientY-h-14;
+  tip.style.left=x+"px";tip.style.top=y+"px";
+}
+marks.on("mouseenter",function(d){showTip(d,d3.event);hi(d,true)})
+ .on("mousemove",function(){moveTip(d3.event)})
+ .on("mouseleave",function(d){tip.style.display="none";hi(d,false)})
+ .on("click",function(d){d3.event.stopPropagation();tip.style.display="none";select(d,false)});
+function hi(d,on){marks.filter(function(m){return m===d}).classed("hi",on).attr("r",on?10:(sel===d?9:6.5))}
+
+// card + list
+var card=document.getElementById("card"),body=document.getElementById("cardbody");
+card.querySelector(".x").onclick=function(){select(null)};
+function select(d,doFly){
+  sel=d;
+  marks.attr("r",function(m){return m===d?9:6.5}).classed("hi",function(m){return m===d});
+  if(d){
+    marks.filter(function(m){return m===d}).each(function(){this.parentNode.appendChild(this)});
+    card.style.borderLeftColor=d.color;card.style.display="block";
+    body.innerHTML=thumb(d,"cth")+"<b class=t>"+esc(d.title)+"</b><dl><dt>Artist</dt><dd>"+esc(d.artist)+"</dd><dt>Date</dt><dd>"+esc(d.date)+
+     "</dd><dt>Medium</dt><dd>"+esc(d.medium)+"</dd><dt>Location</dt><dd>"+esc(d.place)+"</dd></dl><a href=\""+link(d)+"\" target=\"_blank\" rel=\"noopener noreferrer\">See images of this piece (opens a new tab)</a> <button class=fixb data-fix=\""+d.i+"\">Wrong picture? Fix it</button>";
+    if(doFly)fly(d.lon,d.lat,size[d.city]>1?16:7);
+  }else card.style.display="none";
+  [].forEach.call(document.querySelectorAll(".row"),function(r){r.classList.toggle("on",!!d&&+r.dataset.i===d.i)});
+  if(d){var r=document.querySelector('.row[data-i="'+d.i+'"]');if(r&&doFly!==false)r.scrollIntoView({block:"nearest"})}
+}
+var list=document.getElementById("list");
+list.innerHTML=items.map(function(d){
+  return '<button class="row" data-i="'+d.i+'" style="--c:'+d.color+'"><span class="dot"></span><span class="tx"><span class="t">'+(d.i+1)+". "+esc(d.title)+'</span><span class="a">'+esc(d.artist)+" · "+esc(d.date)+" · "+esc(d.place)+"</span></span></button>";
+}).join("");
+list.addEventListener("click",function(e){var r=e.target.closest(".row");if(r)select(items[+r.dataset.i],true)});
+list.addEventListener("mouseover",function(e){var r=e.target.closest(".row");if(r)hi(items[+r.dataset.i],true)});
+list.addEventListener("mouseout",function(e){var r=e.target.closest(".row");if(r)hi(items[+r.dataset.i],false)});
+document.getElementById("q").addEventListener("input",function(){
+  var s=this.value.toLowerCase();
+  [].forEach.call(document.querySelectorAll(".row"),function(r){
+    var d=items[+r.dataset.i],hay=(d.title+" "+d.artist+" "+d.date+" "+d.place+" "+d.medium).toLowerCase();
+    r.style.display=hay.indexOf(s)>-1?"":"none";
+  });
+});
+document.getElementById("quiz").addEventListener("change",function(){document.getElementById("side").classList.toggle("quiz",this.checked)});
+svg.on("click",function(){if(d3.event.target===this||d3.event.target.tagName==="path"||d3.event.target.tagName==="circle"&&!d3.select(d3.event.target).classed("mk"))select(null)});
+/* ===== Guessing game ===== */
+var game=document.getElementById("game"),gb=document.getElementById("gb"),gs=document.getElementById("gs");
+var img={},bad={},isrc={},cand={},full={};
+try{img=JSON.parse(localStorage.getItem("waImg")||"{}");bad=JSON.parse(localStorage.getItem("waBad")||"{}");isrc=JSON.parse(localStorage.getItem("waSrc")||"{}");cand=JSON.parse(localStorage.getItem("waCand")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("waImg",JSON.stringify(img));localStorage.setItem("waBad",JSON.stringify(bad));localStorage.setItem("waSrc",JSON.stringify(isrc));localStorage.setItem("waCand",JSON.stringify(cand))}catch(e){}}
+function addC(i,u,t){var c=cand[i]=cand[i]||[];if(!c.some(function(x){return x.u===u}))c.push({u:u,s:t})}
+var Qs=["Santa Trinita Maestà Cimabue","Ognissanti Madonna","Betrayal of Christ Giotto Scrovegni","Duccio Maestà","Black Madonna of Montserrat","Black Madonna of Oropa",
+"Sacrifice of Isaac Brunelleschi","Sacrifice of Isaac Ghiberti","Ghiberti Saint John the Baptist Orsanmichele","Gates of Paradise Jacob and Esau","Donatello Saint George Orsanmichele","Florence Cathedral","Old Sacristy Brunelleschi San Lorenzo","Holy Trinity Masaccio","Tribute Money Masaccio",
+"Jacopo Bellini Flagellation of Christ drawing","Sassetta Saint Thomas Aquinas in Prayer","Merode Altarpiece","Madonna of Chancellor Rolin","Arnolfini Portrait","Portrait of a Man 1433 van Eyck","Descent from the Cross Rogier van der Weyden","Ghent Altarpiece",
+"Master of the Morrison Triptych Adoration of the Magi","William Stetter Adoration of the Magi Walters","Kongo crucifix","Hip mask Queen Mother Idia Benin","Benin ivory saltcellar","Window Chapter House Convent of Christ Tomar","João de Castilho Convent of Christ Tomar",
+"Fra Angelico Mocking of Christ San Marco","Fra Angelico Annunciation San Marco","Donatello David bronze","Procession of the Magi Gozzoli","Camera degli Sposi","Camera degli Sposi oculus","Gentile Bellini Mehmed II portrait","Gentile Bellini Seated Scribe","Annunciata Antonello da Messina",
+"Saint Francis in Ecstasy Giovanni Bellini","Transfiguration Giovanni Bellini Capodimonte","Annunciation Leonardo Uffizi","Virgin of the Rocks","Portrait of a Young Woman Pollaiuolo Berlin","The Birth of Venus","Botticelli Madonna and Child 1481","Mystic Nativity","Filippino Lippi Strozzi Chapel Saint Philip","Signorelli Orvieto Last Judgment"];
+var finished=false,loading=false;
+function ready(){return items.filter(function(d){return img[d.i]&&!bad[d.i]})}
+function prog(){gs.textContent="Pictures ready: "+ready().length+" / "+items.length}
+var WA={15:"https://uploads7.wikiart.org/images/jacopo-bellini/flagellation.jpg!Large.jpg"};
+function norm(t){return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+function wa(i){
+  if(WA[i]){addC(i,WA[i],"WikiArt");if(!img[i]){img[i]=WA[i];isrc[i]="WikiArt"}save();return Promise.resolve()}
+  var d=items[i],ti=d.title.replace(/\(.*\)/,"").trim(),cl=d.artist.split(/;|,| and |\(/)[0].trim(),sn=norm(cl.split(" ").pop()),
+      tw=norm(ti).split(/\W+/).filter(function(w){return w.length>3});
+  return fetch("https://www.wikiart.org/en/search/"+encodeURIComponent(ti+" "+cl)+"/1?json=2").then(function(r){return r.json()}).then(function(j){
+    var a=j.data||j.Paintings||j.paintings||[];
+    a.filter(function(c){var n=norm((c.artistName||"")+" "+(c.artistUrl||"")),t=norm(c.title||"");return c.image&&n.indexOf(sn)>-1&&tw.some(function(w){return t.indexOf(w)>-1})}).forEach(function(h){
+      var u=h.image.replace(/!.*$/,"")+"!Large.jpg";addC(i,u,"WikiArt");if(!img[i]){img[i]=u;isrc[i]="WikiArt"}});
+    save();
+  }).catch(function(){});
+}
+function wp(i){
+  var u="https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=5&gsrsearch="+encodeURIComponent(Qs[i]||items[i].title+" "+items[i].artist)+"&prop=pageimages&piprop=thumbnail&pithumbsize=640";
+  return fetch(u).then(function(r){return r.json()}).then(function(j){
+    var p=j.query&&j.query.pages?Object.keys(j.query.pages).map(function(k){return j.query.pages[k]}).sort(function(a,b){return a.index-b.index}):[];
+    p.filter(function(x){return x.thumbnail}).forEach(function(h){addC(i,h.thumbnail.source,"Wikipedia");if(!img[i]){img[i]=h.thumbnail.source;isrc[i]="Wikipedia"}});
+    save();
+  }).catch(function(){});
+}
+var TWO={},ARCH={11:1,12:1,29:1};
+[2,5,7,9,11,12,13,16,29,30,31,33,34,36,37,38,47,48].forEach(function(i){TWO[i]=1});
+try{if(!localStorage.getItem("waFix2")){Object.keys(TWO).forEach(function(i){delete img[i];delete cand[i];delete bad[i];delete isrc[i]});save();localStorage.setItem("waFix2","1")}}catch(e){}
+var CQ={2:"Giotto Scrovegni Kiss of Judas Arrest of Christ",5:"Black Madonna Oropa",6:"Brunelleschi Sacrifice of Isaac Bargello",7:"Ghiberti Sacrifice of Isaac Bargello",9:"Ghiberti Gates of Paradise Jacob and Esau panel",11:"Cattedrale di Santa Maria del Fiore Florence",12:"Old Sacristy San Lorenzo Brunelleschi",13:"Masaccio Holy Trinity Santa Maria Novella fresco",16:"Sassetta Saint Thomas Aquinas in Prayer Budapest",25:"Kongo crucifix brass Metropolitan Museum",29:"Convent of Christ Tomar Castilho portal Manueline",30:"Fra Angelico Mocking of Christ San Marco fresco",31:"Fra Angelico Annunciation San Marco cell fresco",33:"Gozzoli Procession of the Magi Medici Riccardi chapel",34:"Mantegna Camera degli Sposi Court of Gonzaga fresco",36:"Gentile Bellini Sultan Mehmed II portrait National Gallery",37:"Gentile Bellini Seated Scribe Gardner Museum",38:"Antonello da Messina Virgin Annunciate Palermo",47:"Filippino Lippi Saint Philip Exorcizing Demon Strozzi Chapel",48:"Signorelli Last Judgment Orvieto San Brizio chapel"};
+function cm(i){
+  var d=items[i],q=CQ[i]||d.title+" "+d.artist.split(/;|,| and |\(/)[0];
+  return fetch("https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrlimit=12&gsrsearch="+encodeURIComponent(q)+"&prop=imageinfo&iiprop=url|mime&iiurlwidth=640").then(function(r){return r.json()}).then(function(j){
+    var p=j.query&&j.query.pages?Object.keys(j.query.pages).map(function(k){return j.query.pages[k]}).sort(function(a,b){return a.index-b.index}):[];
+    p.filter(function(x){var ii=x.imageinfo&&x.imageinfo[0],t=x.title||"";return ii&&/image\/(jpeg|png)/.test(ii.mime)&&!/detail|particolare|dettaglio|crop|detalle|d\u00e9tail|\bmap\b|\bplan\b/i.test(t)&&(ARCH[i]||!/exterior|facade|fa\u00e7ade|chiesa|church|museum|statue|bust|interior/i.test(t))}).slice(0,6).forEach(function(x){
+      var u=x.imageinfo[0].thumburl||x.imageinfo[0].url;addC(i,u,"Commons");if(!img[i]){img[i]=u;isrc[i]="Commons"}});
+    save();
+  }).catch(function(){});
+}
+function pics(d){var i=d.i,a=[];if(img[i])a.push(img[i]);if(TWO[i]){var c=cand[i]||[];for(var k=0;k<c.length&&a.length<2;k++)if(a.indexOf(c[k].u)<0)a.push(c[k].u)}return a}
+function picsHTML(d,c){
+  if(bad[d.i])return "";var a=pics(d);if(!a.length)return "";
+  return '<div class="pair '+c+'">'+a.map(function(u){return '<img src="'+u+'" alt="" title="Source: '+(isrc[d.i]||"")+'" onerror="this.style.display=\'none\'">'}).join("")+"</div>";
+}
+function setPics(d){
+  if(hard){
+    var u=img[d.i];
+    document.getElementById("gpics").innerHTML=u?'<div class="pair gp"><img src="'+u+'" alt="" title="" onerror="this.style.display=\'none\'"></div>':"";
+  }else document.getElementById("gpics").innerHTML=picsHTML(d,"gp");
+}
+function fp(n){return "https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(n)+"?width=640"}
+var HC={25:"Brooklyn_Museum_2011.74_Crucifix_Nkangi_Kiditu.jpg",6:"Filippo_Brunelleschi,_The_Sacrifice_of_Isaac,_1401-2,_Bargello,_Florence.jpg"};
+var GUESS={7:"Lorenzo_Ghiberti,_The_Sacrifice_of_Isaac,_1401-2,_Bargello,_Florence.jpg"},WPI={5:"Sanctuary of Oropa"};
+try{if(!localStorage.getItem("waFix3")){[5,6,7,25,47].forEach(function(i){delete img[i];delete cand[i];delete bad[i];delete isrc[i]});
+  Object.keys(HC).forEach(function(i){addC(i,fp(HC[i]),"Commons");img[i]=fp(HC[i]);isrc[i]="Commons (chosen by you)"});save();localStorage.setItem("waFix3","1")}}catch(e){}
+function tryUrl(i,u,t){return new Promise(function(res){var im=new Image();im.onload=function(){addC(i,u,t);if(!img[i]){img[i]=u;isrc[i]=t}save();res()};im.onerror=function(){res()};im.src=u})}
+function wpi(i){
+  return fetch("https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=images&imlimit=60&titles="+encodeURIComponent(WPI[i])).then(function(r){return r.json()}).then(function(j){
+    var pg=j.query&&j.query.pages?j.query.pages[Object.keys(j.query.pages)[0]]:null;
+    var f=((pg&&pg.images)||[]).map(function(x){return x.title.replace(/^File:/,"")}).filter(function(n){return /\.(jpe?g|png)$/i.test(n)&&!/logo|icon|flag|\bmap\b|commons|symbol|coat/i.test(n)});
+    var k=function(n){return /madonna|virgin|black|statue|nera|maria/i.test(n)?0:1};
+    f.sort(function(a,b){return k(a)-k(b)});
+    f.slice(0,5).forEach(function(n){var u=fp(n);addC(i,u,"Wikipedia article");if(!img[i]){img[i]=u;isrc[i]="Wikipedia article"}});
+    save();
+  }).catch(function(){});
+}
+function pre(i){return GUESS[i]?tryUrl(i,fp(GUESS[i]),"Commons (guessed name)"):WPI[i]?wpi(i):Promise.resolve()}
+function refresh(i){prog();if(sel&&sel.i===i)select(sel,false)}
+function lookup(i){var p=TWO[i]?pre(i).then(function(){return cm(i)}).then(function(){return wp(i)}):wa(i).then(function(){return img[i]?0:wp(i)});return p.then(function(){refresh(i)})}
+function cycle(i){
+  var p=full[i]?Promise.resolve():(TWO[i]?pre(i).then(function(){return cm(i)}):wa(i)).then(function(){return wp(i)}).then(function(){full[i]=1});
+  return p.then(function(){
+    var c=cand[i]||[];if(c.length<2){alert("No other candidate found. Use Paste URL or Search WikiArt in Review pictures.");return false}
+    var k=0;c.forEach(function(x,j){if(x.u===img[i])k=j});var n=c[(k+1)%c.length];
+    img[i]=n.u;isrc[i]=n.s;delete bad[i];save();refresh(i);return true;
+  });
+}
+function apply(i,u,t){addC(i,u,t);var c=cand[i],k=c.map(function(x){return x.u}).indexOf(u);c.unshift(c.splice(k,1)[0]);img[i]=u;isrc[i]=t;delete bad[i];save();refresh(i)}
+function setUrl(i,u){
+  var m=/wikiart\.org\/(?:[a-z]{2}\/)?([^\/?#]+)\/([^\/?#]+)/.exec(u);
+  if(m&&!/\.(jpe?g|png)/i.test(u)){
+    return new Promise(function(res){
+      var done=false,left=0;
+      ["7","8","6","5","4","3","2","1","0",""].forEach(function(n){["jpg","png"].forEach(function(x){
+        left++;var im=new Image(),url="https://uploads"+n+".wikiart.org/images/"+m[1]+"/"+m[2]+"."+x+"!Large.jpg";
+        im.onload=function(){if(!done){done=true;apply(i,url,"WikiArt (pasted)");res()}};
+        im.onerror=function(){if(--left===0&&!done){alert("Could not find the image for that WikiArt page. Paste the direct image address instead.");res()}};
+        im.src=url;
+      })});
+    });
+  }
+  if(/^https?:\/\//i.test(u)){apply(i,u,"Custom");return Promise.resolve()}
+  alert("That does not look like a web address.");return Promise.resolve();
+}
+function thumb(d,c){return picsHTML(d,c)}
+function load(){
+  if(loading)return;loading=true;
+  var todo=items.filter(function(d){return !img[d.i]}).map(function(d){return d.i}),active=0;
+  function pump(){
+    if(!todo.length&&!active){finished=true;prog();return}
+    while(active<6&&todo.length){(function(i){active++;lookup(i).then(function(){active--;prog();pump()})})(todo.shift())}
+  }
+  pump();
+}
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+var OK=["Vasari is weeping with pride.","Even the Medici nod in approval.","Ten florins for you!","Michelangelo is jealous.","Your eye is sharper than Giotto's perfect circle."];
+var NO=["A bold interpretation. Wrong, but bold.","Somewhere an art historian just sighed.","Close, if you squint with your eyes closed.","The Pope has revoked your commission.","Plot twist: it was the other one."];
+var F=[["title","Title","What is the title of this piece?"],["artist","Artist","Who made it?"],["date","Date","When was it made?"],["place","Location","Where can you see it today?"]];
+var pool=[],pi=0,fi=0,pc=0,score=0,streak=0,got=[],res=[],opts=[],hard=false,locked=false,skipped=[];
+function yr(s){var m=/(\d{4})/.exec(s);if(m)return +m[1];m=/(\d+)(st|nd|rd|th)/.exec(s);return m?(+m[1]-1)*100+50:0}
+function lev(a,b){
+  a=norm(a);b=norm(b);if(a===b)return 0;
+  var prev=[],cur=[],i,j,c;
+  for(j=0;j<=b.length;j++)prev[j]=j;
+  for(i=1;i<=a.length;i++){
+    cur=[];cur[0]=i;
+    for(j=1;j<=b.length;j++){
+      c=a[i-1]===b[j-1]?0:1;
+      cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+c);
+    }
+    prev=cur;
+  }
+  return prev[b.length];
+}
+function fuzzyMatch(input,expected){
+  input=norm(input).trim();
+  expected=norm(expected).trim();
+  if(!input||!expected)return false;
+  var iw=input.split(/[^a-z0-9]+/).filter(function(w){return w.length>0});
+  var ew=expected.split(/[^a-z0-9]+/).filter(function(w){return w.length>0});
+  if(!iw.length||!ew.length)return false;
+  return iw.some(function(a){
+    return ew.some(function(b){
+      if(a===b)return true;
+      if(a.length>=4&&b.length>=4&&(a.indexOf(b)>-1||b.indexOf(a)>-1))return true;
+      if(a.length<3||b.length<3)return false;
+      var lim=Math.max(1,Math.floor(Math.min(a.length,b.length)*0.3));
+      return lev(a,b)<=lim;
+    });
+  });
+}
+function msg(t){gb.innerHTML='<p class="gq">'+t+"</p>"}
+function start(){
+  if(!finished){msg("Unrolling the canvases... fetching pictures from Wikipedia ("+ready().length+" so far).");setTimeout(start,600);return}
+  if(ready().length<4){msg("Could not fetch enough pictures from Wikipedia. Open this file from your computer (not a published link), with internet on, then reload.");return}
+  pool=shuf(ready());skipped=items.filter(function(d){return !img[d.i]||bad[d.i]});
+  pi=0;score=0;streak=0;res=[];nextPiece();
+}
+function nextPiece(){
+  if(pi>=pool.length)return fin();
+  var d=pool[pi];fi=0;got=[];pc=0;
+  gb.innerHTML='<div class="gst" id="gst"></div><div id="gpics"></div><div style="text-align:center"><button class="gbtn ghost" id="gnextimg">Wrong picture? Try another</button></div><dl class="rec" id="rec"></dl><div class="gq" id="gqq"></div><div id="gopts"></div><div id="gfb"></div>';
+  setPics(d);
+  drawQ();
+}
+function skip(){var d=pool[pi];bad[d.i]=1;save();skipped.push(d);pool.splice(pi,1);prog();nextPiece()}
+function stat(){
+  var s="Piece "+(pi+1)+" of "+pool.length+". Score "+score+" of "+(pi*4+fi)+" so far. Streak "+streak+".";
+  if(!hard)s+=" Picture from "+(isrc[pool[pi].i]||"?")+"."+(TWO[pool[pi].i]&&pics(pool[pi]).length>1?" Two candidate pictures are shown. At least one should be right.":"");
+  document.getElementById("gst").textContent=s;
+}
+function rec(){
+  document.getElementById("rec").innerHTML=F.map(function(x,j){
+    var g=got[j];
+    return "<dt>"+x[1]+"</dt><dd"+(g?' style="color:'+(g.ok?"#2e9d5b":"#d1453b")+'"':' class="q"')+">"+(g?esc(g.v):(j===fi?"?":"..."))+"</dd>";
+  }).join("");
+}
+function drawQ(){
+  var d=pool[pi],f=F[fi][0],cor=d[f],n=hard?5:3;locked=false;
+  var rest=shuf(items.filter(function(x){return x[f]!==cor}));
+  rest.sort(function(a,b){var k=function(x){return f==="date"?Math.abs(yr(x.date)-yr(d.date)):(x.city===d.city?0:1)};return k(a)-k(b)});
+  var vals=[];rest.forEach(function(x){if(vals.indexOf(x[f])<0)vals.push(x[f])});
+  opts=shuf([cor].concat(shuf(vals.slice(0,n+3)).slice(0,n)));
+  stat();
+  document.getElementById("rec").style.display=hard?"none":"grid";
+  if(!hard)rec();
+  document.getElementById("gqq").textContent=F[fi][2];
+  document.getElementById("gopts").innerHTML=hard
+    ? '<form id="gform" style="max-width:560px;margin:0 auto;display:flex;gap:8px"><input id="ginput" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Type your answer…" aria-label="Your answer" style="flex:1;padding:10px 12px;border:2px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit"><button class="gbtn" id="gsubmit" type="submit" style="margin:0">Submit</button></form>'
+    : opts.map(function(o,k){return '<button class="opt" data-k="'+k+'"><b>'+esc(o)+"</b></button>"}).join("");
+  document.getElementById("gfb").innerHTML="";
+  if(hard)setTimeout(function(){var e=document.getElementById("ginput");if(e)e.focus()},0);
+}
+function finishAnswer(ok,k){
+  var d=pool[pi],f=F[fi][0],last=fi===3;
+  if(ok){score++;streak++;pc++}else streak=0;
+  got[fi]={v:d[f],ok:ok};
+  if(!hard){
+    [].forEach.call(document.querySelectorAll(".opt"),function(b,j){b.disabled=true;if(opts[j]===d[f])b.classList.add("good");else if(j===k)b.classList.add("bad")});
+    rec();
+  }
+  var t=ok?"Correct."+(streak>2?" "+streak+" in a row!":""):"Not quite. It was: "+esc(d[f])+".";
+  if(last){res.push({d:d,got:got.slice()});t+=" "+pc+" of 4 for this piece. "+pick(pc===4?OK:pc>1?["Not bad, apprentice."]:NO)}
+  document.getElementById("gfb").innerHTML='<p class="gq">'+t+'</p><button class="gbtn" id="gnext">'+(last?(pi+1<pool.length?"Next piece":"See my results"):"Next question")+'</button><a href="'+link(d)+'" target="_blank" rel="noopener noreferrer">More images of this piece</a><br><button class="gbtn ghost" id="gskip">The picture is wrong. Remove it for good.</button>';
+}
+function answer(k){
+  if(locked)return;locked=true;
+  finishAnswer(opts[k]===pool[pi][F[fi][0]],k);
+}
+function answerText(){
+  if(locked)return;locked=true;
+  var d=pool[pi],f=F[fi][0],input=document.getElementById("ginput");
+  var value=input?input.value.trim():"";
+  if(!value){locked=false;return}
+  finishAnswer(fuzzyMatch(value,d[f]),null);
+}
+function fin(){
+  var max=res.length*4,p=max?score/max:0,t=p>.8?"Grand Master of the Quattrocento.":p>.5?"Respectable apprentice in the workshop.":"You have been assigned to grind pigments.";
+  var bad2=res.filter(function(x){return x.got.some(function(g){return !g.ok})});
+  gb.innerHTML='<p class="gq">Final score: '+score+" of "+max+". "+t+"</p>"+
+   (bad2.length?'<div class="miss"><b>Review these ('+bad2.length+"):</b><br>"+bad2.map(function(x){var d=x.d;return esc(d.title)+", "+esc(d.artist)+", "+esc(d.date)+", "+esc(d.place)}).join("<br>")+"</div>":'<p class="gq">Perfect run!</p>')+
+   (skipped.length?'<div class="miss"><b>No usable picture, so not asked ('+skipped.length+"):</b><br>"+skipped.map(function(d){return esc(d.title)+", "+esc(d.artist)}).join("<br>")+"</div>":"")+
+   '<div style="text-align:center"><button class="gbtn" id="gagain">Play again</button></div>';
+}
+gb.addEventListener("click",function(e){
+  var o=e.target.closest(".opt"),t=e.target;
+  if(o)answer(+o.dataset.k);
+  else if(t.id==="gnext"){if(fi<3){fi++;drawQ()}else{pi++;nextPiece()}}
+  else if(t.id==="gskip")skip();
+  else if(t.id==="gnextimg"){t.textContent="Searching...";cycle(pool[pi].i).then(function(){t.textContent="Wrong picture? Try another";setPics(pool[pi]);stat()})}
+  else if(t.id==="gagain")start();
+});
+gb.addEventListener("submit",function(e){
+  if(e.target.id==="gform"){e.preventDefault();answerText()}
+});
+document.getElementById("gplay").onclick=function(){game.style.display="block";load();prog();start()};
+document.getElementById("gx").onclick=function(){game.style.display="none"};
+
+var rv=document.getElementById("rv"),rg=document.getElementById("rgrid");
+function rcard(d){
+  var i=d.i,n=(cand[i]||[]).length,q=encodeURIComponent(d.title+" "+d.artist.split(/;|,| and |\(/)[0]);
+  return '<div class="rc'+(bad[i]?" off":"")+'" id="rc'+i+'">'+(img[i]&&!bad[i]?picsHTML(d,"rv"):'<div class="ph">'+(bad[i]?"Removed":"No picture")+"</div>")+
+   "<b>"+esc(d.title)+"</b><span>"+esc(d.artist)+", "+esc(d.date)+", "+esc(d.place)+"</span><span>Source: "+esc(isrc[i]||"none")+(n>1?" ("+n+" candidates)":"")+'</span><div><button class="sb" data-a="next" data-i="'+i+'">Next picture</button><button class="sb" data-a="paste" data-i="'+i+'">Paste URL</button><a class="sb" target="_blank" rel="noopener noreferrer" href="https://www.wikiart.org/en/search/'+q+'">Search WikiArt</a><button class="sb" data-a="rm" data-i="'+i+'">'+(bad[i]?"Restore":"Remove")+"</button></div></div>";
+}
+function rdraw(i){var el=document.getElementById("rc"+i),t=document.createElement("div");t.innerHTML=rcard(items[i]);if(el)el.replaceWith(t.firstChild);prog()}
+function openReview(i){
+  rv.style.display="block";rg.innerHTML=items.map(rcard).join("");
+  if(i!=null){var el=document.getElementById("rc"+i);if(el){el.scrollIntoView({block:"center"});el.style.outline="3px solid "+items[i].color}}
+}
+rg.addEventListener("click",function(e){
+  var b=e.target.closest("[data-a]");if(!b)return;
+  var i=+b.dataset.i,a=b.dataset.a;
+  if(a==="next"){b.textContent="Searching...";cycle(i).then(function(){rdraw(i)})}
+  else if(a==="rm"){if(bad[i])delete bad[i];else bad[i]=1;save();rdraw(i)}
+  else if(a==="paste"){var u=prompt("Paste an image address (on WikiArt: right-click the picture, Copy image address) or a WikiArt page address:");if(u)setUrl(i,u.trim()).then(function(){rdraw(i)})}
+});
+body.addEventListener("click",function(e){var b=e.target.closest("[data-fix]");if(b)openReview(+b.dataset.fix)});
+document.getElementById("rvbtn").onclick=function(){openReview()};
+document.getElementById("rvbtn2").onclick=function(){openReview()};
+document.getElementById("rx").onclick=function(){rv.style.display="none"};
+document.getElementById("rcopy").onclick=function(){
+  var t=items.map(function(d){return (d.i+1)+". "+d.title+" | "+d.artist+" | "+(bad[d.i]?"REMOVED":(img[d.i]||"none"))}).join("\n");
+  if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert("Copied. Paste it in your chat with Claude.")},function(){prompt("Copy this:",t)});else prompt("Copy this:",t);
+};
+load();prog();
+document.getElementById("ghard").onchange=function(){hard=this.checked;start()};
+window.addEventListener("resize",resize);
+resize();
+})();
+</script>
+</body>
+</html>
