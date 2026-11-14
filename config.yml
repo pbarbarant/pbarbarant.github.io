@@ -21,7 +21,7 @@ menu:
           weight: 4 
 
 params:
-    description: "I am a second-year PhD student with the MIND team at INRIA Saclay, France. My research focuses on optimal transport and fMRI decoding."
+    description: "I am a third-year PhD student with the MIND team at INRIA Saclay, France. My research focuses on optimal transport and fMRI decoding."
     author: Pierre-Louis Barbarant
     # googleAnalyticsID: "G-XXXXX"
     DateFormat: "January 2006"
@@ -47,7 +47,7 @@ params:
     profileMode:
           enabled: true
           title: Pierre-Louis Barbarant
-          subtitle: "I am a second-year PhD student with the MIND team at INRIA Saclay, France. My research focuses on enhancing fMRI functional alignment techniques to improve brain decoding performance, leveraging machine learning models and optimal transport methods. Prior to this, I completed a Master's degree in applied mathematics at Université Paris-Saclay, a Master's degree in computer science at Sorbonne Université, and an engineering degree in statistics and economics at ENSAE Paris, France."
+          subtitle: "I am a third-year PhD student with the MIND team at INRIA Saclay, France. My research focuses on enhancing fMRI functional alignment techniques to improve brain decoding performance, leveraging machine learning models and optimal transport methods. Prior to this, I completed a Master's degree in applied mathematics at Université Paris-Saclay, a Master's degree in computer science at Sorbonne Université, and an engineering degree in statistics and economics at ENSAE Paris, France."
           imageUrl: "portrait_bw.png"
           imageWidth: 160
           imageHeight: 160
